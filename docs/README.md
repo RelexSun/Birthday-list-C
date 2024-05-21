@@ -9,7 +9,7 @@ We are team 3 consist of 5 members:
 - Nop Relexsun
 - Savon Chanserey
 - Neang Chakriya
--
+- Soveth Roathbunna
 -
 
 ## Features
