@@ -4,7 +4,7 @@ This project is about create, edit, and display a birthday list of a friend or a
 
 ## Members
 
-We are team 3 consist with 5 members:
+We are team 3 consist of 5 members:
 
 - Nop Relexsun
 -
