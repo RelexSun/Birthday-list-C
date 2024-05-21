@@ -1,0 +1,21 @@
+# CADT Final Project
+
+This project is about create, edit, and display a birthday list of a friend or anyone.
+
+## Members
+
+We are team 3 consist with 5 members:
+
+- Nop Relexsun
+-
+-
+-
+-
+
+## Features
+
+- Create a birthday list
+- Edit a birthday
+- Searching for a birthday by name
+- Display a list of
+  birthdays coming in a month
