@@ -19,8 +19,15 @@ int main() {
         printf("5. Search Birthday\n");
         printf("6. Exit\n");
         printf("Enter your choice: ");
-        scanf("%d", &choice);
+        // scanf("%d", &choice);
+        if (scanf("%d", &choice) != 1) {
+          printf("Invalid input. Please enter an integer.\n");
 
+          // Clear the input buffer
+          while (getchar() != '\n');
+
+          continue;
+      }
         switch (choice) {
           case 1: createBirthday(); break;
           case 2: readBirthday(); break;
@@ -30,6 +37,7 @@ int main() {
           case 6: exit(0); break;
           default: printf("Invalid choice, Please enter the right one!!!!\n");
         }
+        choice=0;
   } 
 
   return 0;
