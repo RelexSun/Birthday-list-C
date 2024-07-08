@@ -25,8 +25,15 @@ void createBirthday() {
   do {
   printf("Enter name: ");
   scanf("%s", b.name);
+  do {
   printf("Enter Date of Birth (dd/mm/yy): ");
   scanf("%2d/%2d/%4d", &b.day, &b.month, &b.year);
+    if (b.day <= 31 || b.month <= 12) {
+      break;
+    } else {
+      printf("Please make sure the Date of Birth is valid.\n");
+    }
+  } while (1);
   fprintf(file, "%s %d %d %d\n", b.name, b.day, b.month, b.year);
   printf("Birthday added successfully!!!\n");
   printf("Press 1 to continue/ 0 to stop: ");
