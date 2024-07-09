@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
+#include<time.h>
 
 const int NAME_LENGTH = 50;
 const char FILE_NAME[50] = "Birthday_list.txt";
@@ -28,7 +29,7 @@ void createBirthday() {
   do {
   printf("Enter Date of Birth (dd/mm/yy): ");
   scanf("%2d/%2d/%4d", &b.day, &b.month, &b.year);
-    if (b.day <= 31 || b.month <= 12) {
+    if (b.day <= 31 && b.month <= 12) {
       break;
     } else {
       printf("Please make sure the Date of Birth is valid.\n");
@@ -182,4 +183,27 @@ void searchBirthday() {
     printf("Data not found!!!\n");
   } 
 
+}
+
+void upcomming() {
+  time_t t = time(NULL);
+  struct tm date = *localtime(&t);
+  Birthday b;
+  printf("Current date is %02d-%02d-%d\n", date.tm_mday, date.tm_mon + 1, date.tm_year + 1900);
+
+  FILE *file = fopen(FILE_NAME, "r");
+  if (file == NULL) {
+      printf("Can't find file!!!");
+      exit(0);
+  }
+
+  int notFound = 1;
+  while (fscanf(file, "%s %d %d %d", b.name, &b.day, &b.month, &b.year) != EOF) {
+    if (b.month == date.tm_mon + 1) {
+      int currentAge = (date.tm_year + 1900) - b.year;
+      notFound = 0;
+      printf("\n%s is turning %d this month.\n", b.name, currentAge);
+    }
+  }
+  if (notFound) printf("\nNo upcomming birthday this month.\n");
 }
