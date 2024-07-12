@@ -2,21 +2,50 @@
 #include<stdlib.h>
 #include<string.h>
 #include<time.h>
+#include <ctype.h>
 
 const int NAME_LENGTH = 50;
 const char FILE_NAME[50] = "Birthday_list.txt";
 
-  struct Birthday{
+struct Birthday{
   char name[NAME_LENGTH];
   int day, month, year;
 
 } b;
 
-void fileValidation (FILE *file) {
+void fileValidation(FILE *file) {
   if (file == NULL) {
       printf("Can't find file!!!");
       exit(0);
   }
+}
+
+int stringCmp(char name1[], char name2[]) {
+  int len1 = strlen(name1);
+  int len2 = strlen(name2);
+
+  if (len1 != len2) return 0;
+
+  for (int i = 0; i < len1; i++) {
+    if (tolower(name1[i]) != tolower(name2[i])) return 0;
+  }
+
+  return 1;
+}
+
+int DOBValidator(int day, int month, int year) {
+  time_t t = time(NULL);
+  struct tm date = *localtime(&t);
+  int daysInMonth[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+  if (month < 1 || month > 12) return 0;
+  if (year > date.tm_year + 1900) return 0;
+  if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) {
+    daysInMonth[1] = 29; 
+  }
+  if (day < 1 || day > daysInMonth[month - 1]) return 0;
+
+  return 1;
 }
 
 void createBirthday() {
@@ -32,7 +61,7 @@ void createBirthday() {
   do {
   printf("Enter Date of Birth (dd/mm/yy): ");
   scanf("%2d/%2d/%4d", &b.day, &b.month, &b.year);
-    if ((b.day <= 31 && b.month <= 12) && (b.day > 0 && b.month > 0)) {
+    if (DOBValidator(b.day, b.month, b.year)) {
       break;
     } else {
       printf("Date of Birth is invalid.❌\n");
@@ -74,15 +103,17 @@ void updateBirthday() {
     fileValidation(&file);
     FILE *tempFile = fopen("temp.txt", "w");
     fileValidation(&tempFile);
+
     printf("Enter the name of the birthday to update: ");
     scanf("%s", name);
+
     while (fscanf(file, "%s %d %d %d", b.name, &b.day, &b.month, &b.year) != EOF) {
-    if (strcmp(b.name, name) == 0) {
+    if (stringCmp(b.name, name)) {
       do {
       found = 1;
       printf("Enter Date of Birth tto update (dd/mm/yy): ");
       scanf("%2d/%2d/%4d", &b.day, &b.month, &b.year);
-      if ((b.day <= 31 && b.month <= 12) && (b.day > 0 && b.month > 0)) {
+      if (DOBValidator(b.day, b.month, b.year)) {
         break;
       } else {
         printf("Date of Birth is invalid.❌\n");
@@ -124,7 +155,7 @@ void deleteBirthday() {
     printf("Enter the name of the birthday to delete: ");
     scanf("%s", name);
     while (fscanf(file, "%s %d %d %d", b.name, &b.day, &b.month, &b.year) != EOF) {
-      if (strcmp(b.name, name) != 0) {
+      if (stringCmp(b.name, name)) {
         fprintf(tempFile, "%s %d %d %d\n", b.name, b.day, b.month, b.year);
       } else {
         found = 1;
@@ -159,7 +190,7 @@ void searchBirthday() {
   scanf("%s", name);
 
   while (fscanf(file, "%s %d %d %d", b.name, &b.day, &b.month, &b.year) != EOF) {
-    if (strcmp(b.name, name) == 0) {
+    if (stringCmp(b.name, name)) {
       printf("\t\t%-30s\t%02d/%02d/%04d\n", b.name, b.day, b.month, b.year);
       found = 1;
   }
