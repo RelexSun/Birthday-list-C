@@ -2,7 +2,7 @@
 #include<stdlib.h>
 #include<string.h>
 #include<time.h>
-#include <ctype.h>
+#include<ctype.h>
 
 const int NAME_LENGTH = 50;
 const char FILE_NAME[50] = "Birthday_list.txt";
@@ -13,11 +13,13 @@ struct Birthday{
 
 } b;
 
-void fileValidation(FILE *file) {
+FILE *openFile(const char *fileName, const char *mode) {
+  FILE *file = fopen(fileName, mode); 
   if (file == NULL) {
-      printf("Can't find file!!!");
-      exit(0);
+    printf("Can't open file %s", fileName);
+    exit(0);
   }
+  return file;
 }
 
 int stringCmp(char name1[], char name2[]) {
@@ -50,11 +52,11 @@ int DOBValidator(int day, int month, int year) {
 
 void createBirthday() {
   system("clear");
-  FILE *file = fopen(FILE_NAME, "a");
+  FILE *file = openFile(FILE_NAME, "a");
   int choice;
 
-  fileValidation(&file);
-
+  printf("\t\t\t**Add Birthday**\n");
+  printf("\n");
   do {
   printf("Enter name: ");
   scanf("%s", b.name);
@@ -77,9 +79,7 @@ void createBirthday() {
 
 void readBirthday() {
   system("clear");
-  FILE *file = fopen(FILE_NAME, "r");
-
-  fileValidation(&file);
+  FILE *file = openFile(FILE_NAME, "r");
 
   printf("\t\t\t**Birthday List**\n");
   printf("\n");
@@ -97,12 +97,11 @@ void updateBirthday() {
   char name[NAME_LENGTH];
   int choice; 
   int found = 0;
-
+  printf("\t\t\t**Update Birthday**\n");
+  printf("\n");
   do {
-    FILE *file = fopen(FILE_NAME, "r");
-    fileValidation(&file);
-    FILE *tempFile = fopen("temp.txt", "w");
-    fileValidation(&tempFile);
+    FILE *file = openFile(FILE_NAME, "r");
+    FILE *tempFile = openFile("temp.txt", "w");
 
     printf("Enter the name of the birthday to update: ");
     scanf("%s", name);
@@ -145,17 +144,15 @@ void deleteBirthday() {
   char name[NAME_LENGTH];
   int found = 0;
   int choice; 
-
+  printf("\t\t\t**Delete Birthday**\n");
+  printf("\n");
   do {
-    FILE *file = fopen(FILE_NAME, "r");
-    fileValidation(&file);
-
-    FILE *tempFile = fopen("temp.txt", "w");
-    fileValidation(&tempFile);
+    FILE *file = openFile(FILE_NAME, "r");
+    FILE *tempFile = openFile("temp.txt", "w");
     printf("Enter the name of the birthday to delete: ");
     scanf("%s", name);
     while (fscanf(file, "%s %d %d %d", b.name, &b.day, &b.month, &b.year) != EOF) {
-      if (stringCmp(b.name, name)) {
+      if (!stringCmp(b.name, name)) {
         fprintf(tempFile, "%s %d %d %d\n", b.name, b.day, b.month, b.year);
       } else {
         found = 1;
@@ -181,11 +178,12 @@ void deleteBirthday() {
 }
 void searchBirthday() {
   system("clear");
-  FILE *file = fopen(FILE_NAME, "r");
-  fileValidation(&file);
+  FILE *file = openFile(FILE_NAME, "r");
 
   char name[NAME_LENGTH];
   int found = 0;
+  printf("\t\t\t**Search Birthday**\n");
+  printf("\n");
   printf("Enter the name to search: ");
   scanf("%s", name);
 
@@ -208,10 +206,10 @@ void upcomming() {
   time_t t = time(NULL);
   struct tm date = *localtime(&t);
 
+  printf("\t\t\t**Upcomming Birthday**\n");
   printf("Current date is %02d-%02d-%d\n", date.tm_mday, date.tm_mon + 1, date.tm_year + 1900);
-
-  FILE *file = fopen(FILE_NAME, "r");
-  fileValidation(&file);
+  printf("\n");
+  FILE *file = openFile(FILE_NAME, "r");
   int found = 0;
   while (fscanf(file, "%s %d %d %d", b.name, &b.day, &b.month, &b.year) != EOF) {
     if (b.month == date.tm_mon + 1) {
@@ -224,17 +222,16 @@ void upcomming() {
 }
 
 void todayParty() {
-
   time_t t = time(NULL);
   struct tm date = *localtime(&t);
 
-  FILE *file = fopen(FILE_NAME, "r");
-  fileValidation(&file);
+  FILE *file = openFile(FILE_NAME, "r");
+
   int found = 0;
   while (fscanf(file, "%s %d %d %d", b.name, &b.day, &b.month, &b.year) != EOF) {
     if ((b.day == date.tm_mday) && (b.month == date.tm_mon + 1)) {
       found = 1;
-      printf("\nToday is %s's birhday. Let's Party!!!🎉🥳\n", b.name);
+      printf("\n\t\tToday is %s's birhday. Let's Party!!!🎉🥳\n", b.name);
     }
   }
   if (!found) printf("\nNo Birthday Today😢\n");

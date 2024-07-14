@@ -13,7 +13,7 @@ int main() {
   int choice;
   system("clear");
   while(1) {
-    printf("\nBirthday List Management System\n");
+    printf("\n\t\t\tBirthday List Management System\n");
     todayParty();
     printf("\n1. Add Birthday\n");
     printf("2. View Birthdays\n");
@@ -32,6 +32,7 @@ int main() {
 
       continue;
   }
+
     switch (choice) {
       case 1: createBirthday(); break;
       case 2: readBirthday(); break;
