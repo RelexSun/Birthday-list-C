@@ -4,8 +4,8 @@
 #include<time.h>
 #include<ctype.h>
 
-const int NAME_LENGTH = 50;
-const char FILE_NAME[50] = "Birthday_list.txt";
+#define NAME_LENGTH 50
+#define FILE_NAME "Birthday_list.txt"
 
 struct Birthday{
   char name[NAME_LENGTH];
@@ -201,12 +201,12 @@ void searchBirthday() {
 
 }
 
-void upcomming() {
+void upcoming() {
   system("clear");
   time_t t = time(NULL);
   struct tm date = *localtime(&t);
 
-  printf("\t\t\t**Upcomming Birthday**\n");
+  printf("\t\t\t**Upcoming Birthday**\n");
   printf("Current date is %02d-%02d-%d\n", date.tm_mday, date.tm_mon + 1, date.tm_year + 1900);
   printf("\n");
   FILE *file = openFile(FILE_NAME, "r");
@@ -218,7 +218,7 @@ void upcomming() {
       printf("\n%s is turning %d this month.\n", b.name, currentAge);
     }
   }
-  if (!found) printf("\nNo upcomming birthday this month.❌\n");
+  if (!found) printf("\nNo upcoming birthday this month.❌\n");
 }
 
 void todayParty() {
@@ -231,7 +231,7 @@ void todayParty() {
   while (fscanf(file, "%s %d %d %d", b.name, &b.day, &b.month, &b.year) != EOF) {
     if ((b.day == date.tm_mday) && (b.month == date.tm_mon + 1)) {
       found = 1;
-      printf("\n\t\tToday is %s's birhday. Let's Party!!!🎉🥳\n", b.name);
+      printf("\n\t\tToday is %s's birthday. Let's Party!!!🎉🥳\n", b.name);
     }
   }
   if (!found) printf("\nNo Birthday Today😢\n");
