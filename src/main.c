@@ -6,7 +6,7 @@ void readBirthday();
 void updateBirthday();
 void deleteBirthday();
 void searchBirthday();
-void upcomming();
+void upcoming();
 void todayParty();
 
 int main() {
@@ -20,7 +20,7 @@ int main() {
     printf("3. Update Birthday\n");
     printf("4. Delete Birthday\n");
     printf("5. Search Birthday\n");
-    printf("6. Upcomming Birthday\n");
+    printf("6. Upcoming Birthday\n");
     printf("7. Exit\n");
     printf("Enter your choice: ");
 
@@ -39,7 +39,7 @@ int main() {
       case 3: updateBirthday(); break;
       case 4: deleteBirthday(); break;
       case 5: searchBirthday(); break;
-      case 6: upcomming(); break;
+      case 6: upcoming(); break;
       case 7: exit(0); break;
       default: printf("Invalid choice, Please enter the right one!!!!❌\n");
     }
