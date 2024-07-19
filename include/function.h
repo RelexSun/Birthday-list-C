@@ -143,7 +143,7 @@ void deleteBirthday() {
 
   char name[NAME_LENGTH];
   int found = 0;
-  int choice; 
+  int choice, n; 
   printf("\t\t\t**Delete Birthday**\n");
   printf("\n");
   do {
@@ -151,6 +151,8 @@ void deleteBirthday() {
     FILE *tempFile = openFile("temp.txt", "w");
     printf("Enter the name of the birthday to delete: ");
     scanf("%s", name);
+    printf("Confirm your deletion (1 to confirm/0 to cancel): ");
+    scanf("%d", &n);  
     while (fscanf(file, "%s %d %d %d", b.name, &b.day, &b.month, &b.year) != EOF) {
       if (!stringCmp(b.name, name)) {
         fprintf(tempFile, "%s %d %d %d\n", b.name, b.day, b.month, b.year);
@@ -158,6 +160,7 @@ void deleteBirthday() {
         found = 1;
       }
   }
+
   fclose(file);
   fclose(tempFile);
 
@@ -170,8 +173,12 @@ void deleteBirthday() {
     printf("Data not found!!!❌\n");
     remove("temp.txt");
   }
+  if (n) {
   printf("Press 1 to continue/ 0 to stop: ");
   scanf("%d", &choice);
+  } else {
+    choice = 0;
+  }
 
   } while (choice != 0);
 
