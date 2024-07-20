@@ -10,8 +10,6 @@ void upcoming();
 void todayParty();
 void clearScreen();
 
-
-
 int main() {
   int choice;
   clearScreen();
