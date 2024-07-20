@@ -22,6 +22,14 @@ FILE *openFile(const char *fileName, const char *mode) {
   return file;
 }
 
+void clearScreen() {
+#ifdef _WIN32
+    system("cls");
+#else
+    system("clear");
+#endif
+}
+
 int stringCmp(char name1[], char name2[]) {
   int len1 = strlen(name1);
   int len2 = strlen(name2);
@@ -51,7 +59,7 @@ int DOBValidator(int day, int month, int year) {
 }
 
 void createBirthday() {
-  system("clear");
+  clearScreen();
   FILE *file = openFile(FILE_NAME, "a");
   int choice;
 
@@ -78,7 +86,7 @@ void createBirthday() {
 }
 
 void readBirthday() {
-  system("clear");
+  clearScreen();
   FILE *file = openFile(FILE_NAME, "r");
 
   printf("\t\t\t**Birthday List**\n");
@@ -92,7 +100,7 @@ void readBirthday() {
 }
 
 void updateBirthday() {
-  system("clear");
+  clearScreen();
 
   char name[NAME_LENGTH];
   int choice; 
@@ -139,7 +147,7 @@ void updateBirthday() {
 }
 
 void deleteBirthday() {
-  system("clear");
+  clearScreen();
 
   char name[NAME_LENGTH];
   int found = 0;
@@ -184,7 +192,7 @@ void deleteBirthday() {
 
 }
 void searchBirthday() {
-  system("clear");
+  clearScreen();
   FILE *file = openFile(FILE_NAME, "r");
 
   char name[NAME_LENGTH];
@@ -209,7 +217,7 @@ void searchBirthday() {
 }
 
 void upcoming() {
-  system("clear");
+  clearScreen();
   time_t t = time(NULL);
   struct tm date = *localtime(&t);
 

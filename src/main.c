@@ -8,10 +8,13 @@ void deleteBirthday();
 void searchBirthday();
 void upcoming();
 void todayParty();
+void clearScreen();
+
+
 
 int main() {
   int choice;
-  system("clear");
+  clearScreen();
   while(1) {
     printf("\n\t\t\tBirthday List Management System\n");
     todayParty();
@@ -25,6 +28,7 @@ int main() {
     printf("Enter your choice: ");
 
     if (scanf("%d", &choice) != 1) {
+      clearScreen();
       printf("Invalid input. Please enter an integer.❌\n");
 
       // Clear the input buffer
