@@ -166,13 +166,19 @@ void deleteBirthday() {
     while (fscanf(file, "%s %d %d %d", b.name, &b.day, &b.month, &b.year) != EOF) {
       if (stringCmp(b.name, name)) {
         found = 1;
-        printf("Confirm your deletion of %s's birthday (1 to confirm/0 to cancel): ", b.name);
-        scanf("%d", &n);
-
-        if (n != 1) {
+        while (1) {
+          printf("Confirm your deletion of %s's birthday (1 to confirm/0 to cancel): ", b.name);
+          if (scanf("%d", &n) == 1 && (n == 1 || n == 0)) {
+              break;
+          } else {
+              printf("Invalid input! Please enter 1 to confirm or 0 to cancel.\n");
+              while (getchar() != '\n');
+          }
+        }
+          if (n != 1) {
             fprintf(tempFile, "%s %d %d %d\n", b.name, b.day, b.month, b.year);
             found = 0;
-        }
+        } 
       } else {
         fprintf(tempFile, "%s %d %d %d\n", b.name, b.day, b.month, b.year);
       }
@@ -235,25 +241,51 @@ void upcoming() {
   printf("\n");
   FILE *file = openFile(FILE_NAME, "r");
   int found = 0;
-  while (fscanf(file, "%s %d %d %d", b.name, &b.day, &b.month, &b.year) != EOF) {
-    if (b.month == date.tm_mon + 1) {
-      int currentAge = (date.tm_year + 1900) - b.year;
+  int MonthDate[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+  if ((date.tm_year % 4 == 0 && date.tm_year % 100 != 0) || (date.tm_year % 400 == 0)) {
+    MonthDate[1] = 29;
+  }
+
+  // int CurrentYear = date.tm_year + 1900;
+  int CurrentMonth = date.tm_mon + 1;
+  int CurrentDay = date.tm_mday;
+
+  while (fscanf(file, "%s %d %d %d", b.name, &b.day, &b.month, &b.year) == 4) {
+    int daysRemaining = 0;
+
+    if (b.month == CurrentMonth && b.day > CurrentDay) {
+      daysRemaining = b.day - CurrentDay;
+
+    } else if (b.month > CurrentMonth) {
+        daysRemaining = MonthDate[CurrentMonth - 1] - CurrentDay; 
+        for (int i = CurrentMonth; i < b.month - 1; i++) {
+          daysRemaining += MonthDate[i]; 
+        }
+      daysRemaining += b.day; 
+    } else if (CurrentMonth == 12 && b.month == 1) {
+      daysRemaining = MonthDate[11] - CurrentDay + b.day; 
+    }
+
+    if (daysRemaining <= 30 && daysRemaining > 0) {
       found = 1;
-      printf("\n%s is turning %d this month.\n", b.name, currentAge);
+      int currentAge = (date.tm_year + 1900) - b.year;
+      printf("%s's Birthday is in %d days. They will be turning %d.\n", b.name, daysRemaining, currentAge);
     }
   }
+    
   if (!found) printf("\nNo upcoming birthday this month.❌\n");
   fclose(file);
 }
+
 
 void todayParty() {
   time_t t = time(NULL);
   struct tm date = *localtime(&t);
 
-  FILE *file = openFile(FILE_NAME, "a+");
+  FILE *Pfile = openFile(FILE_NAME, "a+");
 
   int found = 0;
-  while (fscanf(file, "%s %d %d %d", b.name, &b.day, &b.month, &b.year) != EOF) {
+  while (fscanf(Pfile, "%s %d %d %d", b.name, &b.day, &b.month, &b.year) != EOF) {
     if ((b.day == date.tm_mday) && (b.month == date.tm_mon + 1)) {
       found = 1;
       printf("\n\t\tToday is %s's birthday. Let's Party!!!🎉🥳\n", b.name);
@@ -261,6 +293,6 @@ void todayParty() {
   }
   if (!found) printf("\nNo Birthday Today😢\n");
 
-  fclose(file);
+  fclose(Pfile);
 
 }
