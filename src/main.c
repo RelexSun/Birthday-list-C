@@ -34,7 +34,7 @@ int main() {
 
       continue;
   }
-
+    
     switch (choice) {
       case 1: createBirthday(); break;
       case 2: readBirthday(); break;

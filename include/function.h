@@ -106,7 +106,7 @@ void updateBirthday() {
   clearScreen();
 
   char name[NAME_LENGTH];
-  int choice; 
+  int choice = 0; 
   int found = 0;
   printf("\t\t\t**Update Birthday**\n");
   printf("\n");
@@ -120,15 +120,18 @@ void updateBirthday() {
     while (fscanf(file, "%s %d %d %d", b.name, &b.day, &b.month, &b.year) != EOF) {
     if (stringCmp(b.name, name)) {
       do {
-      found = 1;
-      printf("Enter Date of Birth tto update (dd/mm/yy): ");
-      scanf("%d/%d/%d", &b.day, &b.month, &b.year);
-      if (DOBValidator(b.day, b.month, b.year)) {
-        break;
-      } else {
-        printf("Date of Birth is invalid.❌\n");
-      }
-  } while (1);
+        found = 1;
+        printf("Enter Date of Birth to update (dd/mm/yy): ");
+        if(scanf("%d/%d/%d", &b.day, &b.month, &b.year) == 3) {
+          if (DOBValidator(b.day, b.month, b.year)) {
+            break;
+          } else {
+            printf("Date of Birth is invalid.❌\n");
+          }
+        } else {
+          printf("Date of birth is incomplete!!!\n");
+        }
+      } while (1);
     }
     fprintf(tempFile, "%s %2d %2d %4d\n", b.name, b.day, b.month, b.year);
   }
@@ -141,12 +144,11 @@ void updateBirthday() {
     rename("temp.txt", FILE_NAME);
     printf("Birthday updated!!!✅\n");
   }
-  printf("Press 1 to continue/ 0 to stop: ");
-  scanf("%d", &choice);
+
   fclose(file);
   fclose(tempFile);
-  } while (choice != 0);
 
+  } while (choice != 0);
 }
 
 void deleteBirthday() {
@@ -162,7 +164,7 @@ void deleteBirthday() {
     FILE *tempFile = openFile("temp.txt", "w");
     printf("Enter the name of the birthday to delete: ");
     scanf("%s", name);
-
+    found = 0;
     while (fscanf(file, "%s %d %d %d", b.name, &b.day, &b.month, &b.year) != EOF) {
       if (stringCmp(b.name, name)) {
         found = 1;
@@ -191,17 +193,21 @@ void deleteBirthday() {
     remove(FILE_NAME);
     rename("temp.txt", FILE_NAME);
     printf("Birthday deleted!!!✅\n");
-
+  
   } else {
     printf("Data not found!!!❌\n");
     remove("temp.txt");
   }
-  if (n) {
-  printf("Press 1 to continue/ 0 to stop: ");
-  scanf("%d", &choice);
-  } else {
-    choice = 0;
-  }
+    
+    while (1) {
+      printf("Press 1 to continue/ 0 to stop: ");
+      if (scanf("%d", &choice) == 1 && (choice == 1 || choice == 0)) {
+        break;
+      } else {
+        printf("Invalid input! Please enter 1 to continue or 0 to stop.\n");
+        while (getchar() != '\n');
+      }
+    }
 
   } while (choice != 0);
 
@@ -269,7 +275,7 @@ void upcoming() {
     if (daysRemaining <= 30 && daysRemaining > 0) {
       found = 1;
       int currentAge = (date.tm_year + 1900) - b.year;
-      printf("%s's Birthday is in %d days. They will be turning %d.\n", b.name, daysRemaining, currentAge);
+      printf("%s's Birthday is in %d days and will be turning %d.\n", b.name, daysRemaining, currentAge);
     }
   }
     
@@ -283,9 +289,10 @@ void todayParty() {
   struct tm date = *localtime(&t);
 
   FILE *Pfile = openFile(FILE_NAME, "a+");
+  FILE *file = openFile(FILE_NAME, "r");
 
   int found = 0;
-  while (fscanf(Pfile, "%s %d %d %d", b.name, &b.day, &b.month, &b.year) != EOF) {
+  while (fscanf(file, "%s %d %d %d", b.name, &b.day, &b.month, &b.year) != EOF) {
     if ((b.day == date.tm_mday) && (b.month == date.tm_mon + 1)) {
       found = 1;
       printf("\n\t\tToday is %s's birthday. Let's Party!!!🎉🥳\n", b.name);
@@ -294,5 +301,6 @@ void todayParty() {
   if (!found) printf("\nNo Birthday Today😢\n");
 
   fclose(Pfile);
+  fclose(file);
 
 }
