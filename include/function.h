@@ -195,7 +195,10 @@ void deleteBirthday() {
     printf("Birthday deleted!!!✅\n");
   
   } else {
-    printf("Data not found!!!❌\n");
+    if (n == 0)
+      printf("Deletion cancelled!!!\n");
+    else
+      printf("Data not found!!!❌\n");
     remove("temp.txt");
   }
     
