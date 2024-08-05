@@ -30,19 +30,6 @@ void clearScreen() {
 #endif
 }
 
-int stringCmp(char name1[], char name2[]) {
-  int len1 = strlen(name1);
-  int len2 = strlen(name2);
-
-  if (len1 != len2) return 0;
-
-  for (int i = 0; i < len1; i++) {
-    if (tolower(name1[i]) != tolower(name2[i])) return 0;
-  }
-
-  return 1;
-}
-
 int DOBValidator(int day, int month, int year) {
   time_t t = time(NULL);
   struct tm date = *localtime(&t);
@@ -61,31 +48,51 @@ int DOBValidator(int day, int month, int year) {
 void createBirthday() {
   clearScreen();
   FILE *file = openFile(FILE_NAME, "a");
+  FILE *rfile = openFile(FILE_NAME, "r");
   int choice;
 
   printf("\t\t\t**Add Birthday**\n");
   printf("\n");
   do {
-  printf("Enter name: ");
-  scanf("%s", b.name);
-  do {
-  printf("Enter Date of Birth (dd/mm/yy): ");
-  if(scanf("%d/%d/%d", &b.day, &b.month, &b.year) == 3) {
-    if (DOBValidator(b.day, b.month, b.year)) {
-      break;
+    int found;
+    do {
+      found = 0;
+      FILE *rfile = openFile(FILE_NAME, "r");
+      printf("Enter name: ");
+      scanf("%s", b.name);
+      int day, month, year;
+      char name[NAME_LENGTH];
+
+      while (fscanf(rfile, "%s %d %d %d", name, &day, &month, &year) != EOF) {
+          if (strcmp(b.name, name) == 0) {
+              found = 1;
+              printf("\nName already exists.❌\n");
+              break;
+          }
+      }
+      fclose(rfile);
+  } while (found);
+
+  while (1) {
+    printf("Enter Date of Birth (dd/mm/yyyy): ");
+    if(scanf("%d/%d/%d", &b.day, &b.month, &b.year) == 3) {
+      if (DOBValidator(b.day, b.month, b.year)) {
+        break;
+      } else {
+        printf("Date of Birth is invalid.❌\n");
+      }
     } else {
-      printf("Date of Birth is invalid.❌\n");
+      printf("Date of birth is incomplete!!!\n");
     }
-  } else {
-    printf("Date of birth is incomplete!!!\n");
   }
-  } while (1);
+
   fprintf(file, "%s %2d %2d %4d\n", b.name, b.day, b.month, b.year);
   printf("Birthday added successfully!!!✅\n");
   printf("Press 1 to continue/ 0 to stop: ");
   scanf("%d", &choice);
   } while (choice != 0);
-  fclose(file);
+
+  fclose(file);  
 }
 
 void readBirthday() {
@@ -118,10 +125,10 @@ void updateBirthday() {
     scanf("%s", name);
 
     while (fscanf(file, "%s %d %d %d", b.name, &b.day, &b.month, &b.year) != EOF) {
-    if (stringCmp(b.name, name)) {
+    if (strcasecmp(b.name, name) == 0) {
       do {
         found = 1;
-        printf("Enter Date of Birth to update (dd/mm/yy): ");
+        printf("Enter Date of Birth to update (dd/mm/yyyy): ");
         if(scanf("%d/%d/%d", &b.day, &b.month, &b.year) == 3) {
           if (DOBValidator(b.day, b.month, b.year)) {
             break;
@@ -166,15 +173,15 @@ void deleteBirthday() {
     scanf("%s", name);
     found = 0;
     while (fscanf(file, "%s %d %d %d", b.name, &b.day, &b.month, &b.year) != EOF) {
-      if (stringCmp(b.name, name)) {
+      if (strcasecmp(b.name, name) == 0) {
         found = 1;
         while (1) {
           printf("Confirm your deletion of %s's birthday (1 to confirm/0 to cancel): ", b.name);
           if (scanf("%d", &n) == 1 && (n == 1 || n == 0)) {
               break;
           } else {
-              printf("Invalid input! Please enter 1 to confirm or 0 to cancel.\n");
-              while (getchar() != '\n');
+              printf("Invalid input! Press any key...\n");
+              getchar();
           }
         }
           if (n != 1) {
@@ -227,7 +234,7 @@ void searchBirthday() {
   scanf("%s", name);
 
   while (fscanf(file, "%s %d %d %d", b.name, &b.day, &b.month, &b.year) != EOF) {
-    if (stringCmp(b.name, name)) {
+    if (strcasecmp(b.name, name) == 0) {
       printf("\t\t%-30s\t%02d/%02d/%04d\n", b.name, b.day, b.month, b.year);
       found = 1;
   }
@@ -240,7 +247,7 @@ void searchBirthday() {
 
 }
 
-void upcoming() {
+void upcomming() {
   clearScreen();
   time_t t = time(NULL);
   struct tm date = *localtime(&t);
@@ -286,7 +293,6 @@ void upcoming() {
   fclose(file);
 }
 
-
 void todayParty() {
   time_t t = time(NULL);
   struct tm date = *localtime(&t);
@@ -298,12 +304,80 @@ void todayParty() {
   while (fscanf(file, "%s %d %d %d", b.name, &b.day, &b.month, &b.year) != EOF) {
     if ((b.day == date.tm_mday) && (b.month == date.tm_mon + 1)) {
       found = 1;
-      printf("\n\t\tToday is %s's birthday. Let's Party!!!🎉🥳\n", b.name);
+      printf("\n\t\t\t\tToday is %s's birthday. Let's Party!!!🎉🥳\n", b.name);
+      printf("\n");
     }
   }
-  if (!found) printf("\nNo Birthday Today😢\n");
+  if (!found) printf("\n\t\t\t\t\tNo Birthday Today😢\n");
 
   fclose(Pfile);
   fclose(file);
+
+}
+
+void BirthdayCalculator() {
+  time_t t = time(NULL);
+  struct tm date = *localtime(&t);
+  int month, day, year;
+
+  int CurrentYear = date.tm_year + 1900;
+  int CurrentMonthDay = date.tm_mday;
+  int CurrentMonth = date.tm_mon + 1;
+  int daysLived = 0;
+  int MonthDate[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+  if ((date.tm_year % 4 == 0 && date.tm_year % 100 != 0) || (date.tm_year % 400 == 0)) {
+    MonthDate[1] = 29;
+  }
+  do {
+    printf("Enter Date of Birth to calculate your age (dd/mm/yyyy): ");
+    if(scanf("%d/%d/%d", &day, &month, &year) == 3) {
+      if (DOBValidator(day, month, year)) {
+        break;
+      } else {
+        printf("Date of Birth is invalid.❌\n");
+      }
+    } else {
+      printf("Date of birth is incomplete!!!\n");
+    }
+  } while (1);
+
+  int age = CurrentYear - year;
+  if ((month > CurrentMonth) || (month == CurrentMonth && day > CurrentMonthDay)) {
+    age -= 1;
+  }
+
+  daysLived = age * 365;
+  for (int i = year; i <= CurrentYear; i++) {
+    if ((i % 4 == 0 && i % 100 != 0) || (i % 400 == 0)) {
+      daysLived += 1;
+    }
+  }
+  daysLived += MonthDate[month - 1] - day;
+  for (int i = month; i < CurrentMonth; i++) {
+    daysLived += MonthDate[i];
+  }
+  daysLived -= MonthDate[CurrentMonth - 1] - CurrentMonthDay;
+
+  printf("\n\t\t\t\tYour age is %d\n", age);
+  printf("\n\t\t\t\tYou have live for %d days\n", daysLived);
+
+}
+
+void displayMenu() {
+    clearScreen();
+    printf("\n\t\t\t\t\t******************************\n");
+    printf("\t\t\t\t\t*  Birthday List Management  *\n");
+    printf("\t\t\t\t\t******************************\n");
+    todayParty();
+    printf("\t\t\t\t\t*                            *\n");
+    printf("\t\t\t\t\t*  1. Add Birthday           *\n");
+    printf("\t\t\t\t\t*  2. View Birthdays         *\n");
+    printf("\t\t\t\t\t*  3. Update Birthday        *\n");
+    printf("\t\t\t\t\t*  4. Delete Birthday        *\n");
+    printf("\t\t\t\t\t*  5. Search Birthday        *\n");
+    printf("\t\t\t\t\t*  6. Upcoming Birthday      *\n");
+    printf("\t\t\t\t\t*  7. Birthday Calculator    *\n");
+    printf("\t\t\t\t\t*  8. Exit                   *\n");
+    printf("\t\t\t\t\t******************************\n");
 
 }

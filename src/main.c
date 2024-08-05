@@ -6,34 +6,19 @@ void readBirthday();
 void updateBirthday();
 void deleteBirthday();
 void searchBirthday();
-void upcoming();
+void upcomming();
 void todayParty();
+void BirthdayCalculator();
 void clearScreen();
+void displayMenu();
 
 int main() {
   int choice;
   clearScreen();
   while(1) {
-    printf("\n\t\t\tBirthday List Management System\n");
-    todayParty();
-    printf("\n1. Add Birthday\n");
-    printf("2. View Birthdays\n");
-    printf("3. Update Birthday\n");
-    printf("4. Delete Birthday\n");
-    printf("5. Search Birthday\n");
-    printf("6. Upcoming Birthday\n");
-    printf("7. Exit\n");
-    printf("Enter your choice: ");
-
-    if (scanf("%d", &choice) != 1) {
-      clearScreen();
-      printf("Invalid input. Please enter an integer.❌\n");
-
-      // Clear the input buffer
-      while (getchar() != '\n');
-
-      continue;
-  }
+    displayMenu();
+    printf("\t\t\t\t\t Enter your choice: ");
+    scanf("%d", &choice);
     
     switch (choice) {
       case 1: createBirthday(); break;
@@ -41,12 +26,14 @@ int main() {
       case 3: updateBirthday(); break;
       case 4: deleteBirthday(); break;
       case 5: searchBirthday(); break;
-      case 6: upcoming(); break;
-      case 7: exit(0); break;
+      case 6: upcomming(); break;
+      case 7: BirthdayCalculator(); break;
+      case 8: exit(0); break;
       default: printf("Invalid choice, Please enter the right one!!!!❌\n");
     }
-    choice = 0;
+    printf("\nPress Enter to continue...");
+    getchar();
+    getchar();
   } 
-
   return 0;
 }
