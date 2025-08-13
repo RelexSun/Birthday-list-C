@@ -14,6 +14,8 @@ We are team 3 consist of 5 members:
 
 ## Features
 
+We focus on redundant input validation!
+
 - Create a birthday list
 - Edit a birthday
 - Searching for a birthday by name
